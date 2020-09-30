@@ -1,0 +1,47 @@
+{% extends "base_generic.html" %}
+{% block content %}
+
+    
+ <div class="container-fluid">
+     <form method="GET" id="entrada-form" action="{% url 'buscar' %}">
+         <div class="row">
+             {% csrf_token %}
+             {% for field in form %}
+             <div class="form-group col-4">
+                 <label class="col-12">{{ field.label }}</label>
+                 {{ field }}
+             </div>
+             {% endfor %}
+             <input type="submit" class="btn btn-primary" value="Buscar Codigo" />
+         </div>
+    </form>
+ </div>
+   
+ <div class="container-fluid">
+     <table class="table table-striped table-sm" id="my_entrada">
+         <thead>
+             <tr>
+                 <th>Codigo</th>
+                 <th>Producto</th>
+                 <th>Descripcion</th>
+                 <th>Cantidad Actual</th>
+             </tr>
+         </thead>
+         <tbody>
+             {% for inventario in inventarios %}
+             <tr>
+                 <td>{{inventario.codigob}}</td>
+                 <td>{{inventario.producto.nombre}}</td>
+                 <td>{{inventario.producto.descripcion}}</td>
+                 <td>{{inventario.cantidad}}</td>
+                
+             </tr>
+             {% endfor %}
+         </tbody>
+     </table>
+
+ </div>
+  
+{% endblock %}
+
+

@@ -11,6 +11,7 @@
         <!-- Add additional CSS in static file -->
         {% load static %}
         <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+        <script type="text/javascript" src="{% static 'js/ajax.js' %}"></script>
     </head>
 
         <body>
@@ -23,6 +24,7 @@
                         <ul class="sidebar-nav">
                             <li><a href="{% url 'index' %}">Home</a></li>
                             <li><a href="{% url 'producto' %}">Lista de Productos</a></li>
+                            <li><a href="{% url 'entrada' %}">Ingreso de Productos</a></li>
                             <li><a href="admin/">Alta de producto</a></li>
                             
                         </ul>
