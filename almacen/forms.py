@@ -21,3 +21,17 @@ class BuscarCodigoForm(forms.Form):
     class Meta:
         model=Inventario
         fields=("__all__")    
+
+class EntradaCantidadForm(forms.Form):
+    cantidad = forms.IntegerField(required=True, help_text="Ingrese Cantidad de producto")
+    
+    def __init__(self,*args, **kwargs):
+        super(EntradaCantidadForm, self).__init__(*args, **kwargs)
+        for name in self.fields.keys():
+            self.fields[name].widget.attrs.update({
+                'class':'form-control',
+            })
+
+    class Meta:
+        model=Inventario
+        fields=("__all__")    

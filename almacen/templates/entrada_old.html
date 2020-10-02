@@ -1,0 +1,80 @@
+{% extends "base_generic.html" %}
+{% block content %}
+
+    
+ <div class="container-fluid">
+     <form id="entrada-form" >
+         <div class="row">
+             {% csrf_token %}
+             {% for field in form %}
+             <div class="form-group col-4">
+                 <label class="col-12">{{ field.label }}</label>
+                 {{ field }}
+             </div>
+             {% endfor %}
+             <input type="submit" class="btn btn-primary" value="Buscar Codigo" onclick="loadProd()" />
+         </div>
+    </form>
+ </div>
+   
+
+<script>
+    function loadProd() {
+
+        var str;
+        str=document.getElementById("codigo").value
+        console.log(str)
+        if (str.length == 0) {
+            document.getElementById("my_registro").innerHTML = "";
+            return;
+        } else {
+            var xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    var myObj = JSON.parse(this.responseText);
+                    document.getElementById("my_registro").innerHTML = 
+                    
+                     `<tr>
+                    <td>`+ myObj.codigob+`</td>
+                    <td>`+ myObj.nombre +`</td>
+                    <td>`+ myObj.descripcion +`</td>
+                    <td>`+ myObj.cantidad +`</td>
+                    
+                    </tr>`
+                    ;
+                }
+            };
+            xmlhttp.open("GET", "{% url 'buscar' %}?codigo=" + str, true);
+            xmlhttp.send();
+        }
+    }
+</script>
+
+ <div class="container-fluid">
+     <table class="table table-striped table-sm" id="my_entrada">
+         <thead>
+             <tr>
+                 <th>Codigo</th>
+                 <th>Producto</th>
+                 <th>Descripcion</th>
+                 <th>Cantidad Actual</th>
+             </tr>
+         </thead>
+         <tbody id="my_registro">
+             {% for inventario in inventarios %}
+             <tr>
+                 <td>{{inventario.codigob}}</td>
+                 <td>{{inventario.producto.nombre}}</td>
+                 <td>{{inventario.producto.descripcion}}</td>
+                 <td>{{inventario.cantidad}}</td>
+                
+             </tr>
+             {% endfor %}
+         </tbody>
+     </table>
+
+ </div>
+  
+{% endblock %}
+
+

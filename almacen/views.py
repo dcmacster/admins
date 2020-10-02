@@ -17,7 +17,7 @@ import json
 
 # Create your views here.
 from .models import Producto,Inventario,Imagen
-from .forms import BuscarCodigoForm
+from .forms import BuscarCodigoForm, EntradaCantidadForm
 
 def index(request):
     mensage='Bienvenido '
@@ -46,6 +46,85 @@ def EntradaView(request):
     inventarios=Inventario.objects.select_related('producto')
     return render(request,"entrada.html",{"form":form,"inventarios":inventarios})
 
+
+
+def postBuscar(request):
+    if request.method == 'POST':
+        form = BuscarCodigoForm(request.POST)
+        if form.is_valid():
+            buscodigo=request.POST.get('codigo')
+            form = EntradaCantidadForm()
+            inventarios = Inventario.objects.filter(codigob=buscodigo).select_related('producto')
+            return render(request,"ingreso.html",{"form":form,"inventarios":inventarios})
+    else:
+        form = BuscarCodigoForm()
+        inventarios=Inventario.objects.select_related('producto')
+        return render(request,"entrada.html",{"form":form,"inventarios":inventarios})
+
+
+def postIngresar(request):
+    if request.method == 'POST':
+        form = EntradaCantidadForm(request.POST)
+        if form.is_valid():
+            pk = request.POST.get('pk')
+            cantidad = int(request.POST.get('cantidad'))
+            ingresos=get_object_or_404(Inventario, pk = pk)
+            #ingresos = Inventario.objects.filter(id=pk)
+            cantidadact = ingresos.cantidad
+            cantidad=cantidad+cantidadact
+            ingresos.cantidad=cantidad
+            ingresos.save()
+            form = BuscarCodigoForm()
+            inventarios = Inventario.objects.select_related('producto')
+            return render(request, "entrada.html", {"form": form, "inventarios": inventarios})
+    else:
+        form = BuscarCodigoForm()
+        inventarios = Inventario.objects.select_related('producto')
+        return render(request, "entrada.html", {"form": form, "inventarios": inventarios})
+
+def SalidaView(request):
+    form = BuscarCodigoForm()
+    inventarios=Inventario.objects.select_related('producto')
+    return render(request,"salida.html",{"form":form,"inventarios":inventarios})
+
+
+def postSbuscar(request):
+    if request.method == 'POST':
+        form = BuscarCodigoForm(request.POST)
+        if form.is_valid():
+            buscodigo = request.POST.get('codigo')
+            form = EntradaCantidadForm()
+            inventarios = Inventario.objects.filter(
+                codigob=buscodigo).select_related('producto')
+            return render(request, "reduccion.html", {"form": form, "inventarios": inventarios})
+    else:
+        form = BuscarCodigoForm()
+        inventarios = Inventario.objects.select_related('producto')
+        return render(request, "salida.html", {"form": form, "inventarios": inventarios})
+
+
+def postReducir(request):
+    if request.method == 'POST':
+        form = EntradaCantidadForm(request.POST)
+        if form.is_valid():
+            pk = request.POST.get('pk')
+            cantidad = int(request.POST.get('cantidad'))
+            ingresos = get_object_or_404(Inventario, pk=pk)
+            #ingresos = Inventario.objects.filter(id=pk)
+            cantidadact = ingresos.cantidad
+            cantidad = cantidadact-cantidad
+            ingresos.cantidad = cantidad
+            ingresos.save()
+            form = BuscarCodigoForm()
+            inventarios = Inventario.objects.select_related('producto')
+            return render(request, "salida.html", {"form": form, "inventarios": inventarios})
+    else:
+        form = BuscarCodigoForm()
+        inventarios = Inventario.objects.select_related('producto')
+        return render(request, "salida.html", {"form": form, "inventarios": inventarios})
+
+
+
 def postEntrada(request):
     #if request.is_ajax and request.method=="GET":
        # form=BuscarCodigoForm(request.POST)
@@ -54,6 +133,8 @@ def postEntrada(request):
     buscodigo=request.GET.get('codigo')
     inventarios=Inventario.objects.filter(codigob=buscodigo).select_related('producto')
     inventarios=[inventario_serializer(inventario) for inventario in inventarios]
+        
+    
     return HttpResponse(json.dumps(inventarios), content_type='application/json')
     #return JsonResponse({"instance":inventarios}, status=200)
     #instance = {'id':inventarios.Inventario.id,'codigob':inventarios.codigob,'nombre':inventarios.nombre,'descripcion':inventarios.descripcion,'cantidad':inventarios.cantidad}
@@ -66,8 +147,15 @@ def postEntrada(request):
 
 
 def inventario_serializer(inventario):
-    #return {'id':inventario.id,'codigob':inventario.codigob,'cantidad':inventario.cantidad}
-    return {'id':inventario.id,'codigob':inventario.codigob,'nombre':inventario.producto.nombre,'descripcion':inventario.producto.descripcion,'cantidad':inventario.cantidad}
+   
+
+    return {
+         'id':inventario.id,
+        'codigob':inventario.codigob,
+        'nombre':inventario.producto.nombre,
+        'descripcion':inventario.producto.descripcion,
+        'cantidad':inventario.cantidad
+    }
 
         
 

@@ -3,7 +3,7 @@
 
 
 <div class="container-fluid">
-    <form method="POST" id="entrada-form" action="{% url 'buscar' %}">
+    <form method="POST" id="salida-form" action="{% url 'sbuscar' %}">
         <div class="row">
             {% csrf_token %}
             {% for field in form %}
@@ -21,7 +21,7 @@
 
 
 <div class="container-fluid">
-    <table class="table table-striped table-sm" id="my_entrada">
+    <table class="table table-striped table-sm" id="my_salida">
         <thead>
             <tr>
                 <th>Codigo</th>
