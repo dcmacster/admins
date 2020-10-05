@@ -9,7 +9,8 @@
 
     {% for entrada in entrada_list %}
     <li>
-       {{entrada.cantidad}} {{entrada.fecha}}   {{entrada.hora}}
+       {{ entrada.inventario.codigob }} ({{entrada.inventario.producto.nombre}}) {{entrada.cantidad}} {{entrada.fecha}}
+       {{entrada.hora}}
 
     </li>
     {% endfor %}

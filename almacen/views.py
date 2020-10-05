@@ -119,7 +119,7 @@ def postReducir(request):
             cantidad = cantidadact-cantidad
             ingresos.cantidad = cantidad
             ingresos.save()
-            rsalida = regSalida(inventario=Inventario.objects.get(id=pk), cantidad=cantidad, fecha=datetime.date.today(), hora=time.strftime("%X"))
+            rsalida = regSalida(inventario=Inventario.objects.get(id=pk),  cantidad=cantidad, fecha=datetime.date.today(), hora=time.strftime("%X"))
             rsalida.save()
             form = BuscarCodigoForm()
             inventarios = Inventario.objects.select_related('producto')
@@ -131,19 +131,20 @@ def postReducir(request):
 
 
 def EntradaListView(request):
-    #entrada_list = regEntrada.objects.select_related('inventario__producto')
-    entrada_list = regEntrada.objects.all()
+    entrada_list = regEntrada.objects.select_related('inventario__producto')
+    #entrada_list = regEntrada.objects.all()
     return render(
         request, 'entradas_list.html',
-        {'entradas_list': entrada_list}
+        {'entrada_list': entrada_list}
     )
 
 
 def SalidaListView(request):
     salida_list = regSalida.objects.select_related('inventario__producto')
+    #salida_list= regSalida.objects.get(id=7)
     return render(
         request, 'salidas_list.html',
-        {'salidas_list': salida_list}
+        {'salida_list': salida_list}
     )
 
 

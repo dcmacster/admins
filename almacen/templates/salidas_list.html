@@ -9,7 +9,7 @@
 
     {% for salida in salida_list %}
     <li>
-        {{ salida.inventario.codigob }} ({{salida.producto.nombre}}) {{salida.cantidad}} {{salida.fecha}} {{salida.hora}}
+       {{ salida.inventario.codigob }} ({{salida.inventario.producto.nombre}}) {{salida.cantidad}} {{salida.fecha}} {{salida.hora}}
 
     </li>
     {% endfor %}
