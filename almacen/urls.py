@@ -13,5 +13,7 @@ urlpatterns = [
     url(r'^salida/', views.SalidaView, name='salida'),
     url(r'^sbuscar/',views.postSbuscar,name='sbuscar'),
     url(r'^reduccion/', views.postReducir, name='reduccion'),
+    url(r'^lentradas/', views.EntradaListView,name='lentradas'),
+    url(r'^lsalidas/', views.SalidaListView,name='lsalidas'),
 
 ]

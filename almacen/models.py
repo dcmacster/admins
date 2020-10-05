@@ -9,6 +9,7 @@ from django.dispatch import receiver
 from datetime import date
 
 
+
 class Producto(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, help_text="ID único para este libro particular en toda la biblioteca")
     nombre = models.CharField(max_length=200)
@@ -55,3 +56,23 @@ class Imagen(models.Model):
         """
         return '%s (%s) %s' % (self.id, self.producto.nombre,self.imagen)
  
+class regEntrada(models.Model):
+    inventario=models.ForeignKey('Inventario', on_delete=models.CASCADE, null=True)
+    cantidad = models.IntegerField(default=0)
+    fecha = models.DateField(null=True, blank=True)
+    hora=models.TimeField(null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+
+    def __str__(self):
+        return '%s (%s) %s' % (self.id, self.inventario.codigob, self.cantidad)
+
+
+class regSalida(models.Model):
+    inventario=models.ForeignKey('Inventario', on_delete=models.CASCADE, null=True)
+    cantidad = models.IntegerField(default=0)
+    fecha = models.DateField(null=True, blank=True)
+    hora=models.TimeField(null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+
+    def __str__(self):
+        return '%s (%s) %s' % (self.id, self.inventario.codigob, self.cantidad)

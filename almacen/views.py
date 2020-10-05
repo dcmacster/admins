@@ -10,13 +10,13 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse, reverse_lazy
 import datetime
-
+import time
 import json
 #from .forms import SingUpForm, RenewBookForm, OnloanBookForm, MaintenanceBookForm, AviableBookForm
 
 
 # Create your views here.
-from .models import Producto,Inventario,Imagen
+from .models import Producto,Inventario,Imagen, regEntrada, regSalida
 from .forms import BuscarCodigoForm, EntradaCantidadForm
 
 def index(request):
@@ -74,6 +74,9 @@ def postIngresar(request):
             cantidad=cantidad+cantidadact
             ingresos.cantidad=cantidad
             ingresos.save()
+            rentrada = regEntrada(inventario=Inventario.objects.get(id=pk), cantidad=cantidad,
+                                  fecha=datetime.date.today(), hora=time.strftime("%X"))
+            rentrada.save()
             form = BuscarCodigoForm()
             inventarios = Inventario.objects.select_related('producto')
             return render(request, "entrada.html", {"form": form, "inventarios": inventarios})
@@ -107,6 +110,7 @@ def postReducir(request):
     if request.method == 'POST':
         form = EntradaCantidadForm(request.POST)
         if form.is_valid():
+           
             pk = request.POST.get('pk')
             cantidad = int(request.POST.get('cantidad'))
             ingresos = get_object_or_404(Inventario, pk=pk)
@@ -115,6 +119,8 @@ def postReducir(request):
             cantidad = cantidadact-cantidad
             ingresos.cantidad = cantidad
             ingresos.save()
+            rsalida = regSalida(inventario=Inventario.objects.get(id=pk), cantidad=cantidad, fecha=datetime.date.today(), hora=time.strftime("%X"))
+            rsalida.save()
             form = BuscarCodigoForm()
             inventarios = Inventario.objects.select_related('producto')
             return render(request, "salida.html", {"form": form, "inventarios": inventarios})
@@ -123,6 +129,26 @@ def postReducir(request):
         inventarios = Inventario.objects.select_related('producto')
         return render(request, "salida.html", {"form": form, "inventarios": inventarios})
 
+
+def EntradaListView(request):
+    #entrada_list = regEntrada.objects.select_related('inventario__producto')
+    entrada_list = regEntrada.objects.all()
+    return render(
+        request, 'entradas_list.html',
+        {'entradas_list': entrada_list}
+    )
+
+
+def SalidaListView(request):
+    salida_list = regSalida.objects.select_related('inventario__producto')
+    return render(
+        request, 'salidas_list.html',
+        {'salidas_list': salida_list}
+    )
+
+
+'''
+*****para trabajar con ajax*****
 
 
 def postEntrada(request):
@@ -156,6 +182,4 @@ def inventario_serializer(inventario):
         'descripcion':inventario.producto.descripcion,
         'cantidad':inventario.cantidad
     }
-
-        
-
+'''

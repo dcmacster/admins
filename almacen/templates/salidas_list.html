@@ -1,0 +1,21 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<h1>Lista de Productos</h1>
+
+
+{% if salida_list %}
+<ul>
+
+    {% for salida in salida_list %}
+    <li>
+        {{ salida.inventario.codigob }} ({{salida.producto.nombre}}) {{salida.cantidad}} {{salida.fecha}} {{salida.hora}}
+
+    </li>
+    {% endfor %}
+
+</ul>
+{% else %}
+<p>No hay registro de salidas en el almacen.</p>
+{% endif %}
+{% endblock %}

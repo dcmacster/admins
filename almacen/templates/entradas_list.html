@@ -1,0 +1,21 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<h1>Lista de Productos</h1>
+
+
+{% if entrada_list %}
+<ul>
+
+    {% for entrada in entrada_list %}
+    <li>
+       {{entrada.cantidad}} {{entrada.fecha}}   {{entrada.hora}}
+
+    </li>
+    {% endfor %}
+
+</ul>
+{% else %}
+<p>No hay registro de entradas en el almacen.</p>
+{% endif %}
+{% endblock %}
