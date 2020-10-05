@@ -67,14 +67,14 @@ def postIngresar(request):
         form = EntradaCantidadForm(request.POST)
         if form.is_valid():
             pk = request.POST.get('pk')
-            cantidad = int(request.POST.get('cantidad'))
+            cantidadf = int(request.POST.get('cantidad'))
             ingresos=get_object_or_404(Inventario, pk = pk)
             #ingresos = Inventario.objects.filter(id=pk)
             cantidadact = ingresos.cantidad
-            cantidad=cantidad+cantidadact
+            cantidad=cantidadf+cantidadact
             ingresos.cantidad=cantidad
             ingresos.save()
-            rentrada = regEntrada(inventario=Inventario.objects.get(id=pk), cantidad=cantidad,
+            rentrada = regEntrada(inventario=Inventario.objects.get(id=pk), cantidad=cantidadf,
                                   fecha=datetime.date.today(), hora=time.strftime("%X"))
             rentrada.save()
             form = BuscarCodigoForm()
@@ -112,14 +112,14 @@ def postReducir(request):
         if form.is_valid():
            
             pk = request.POST.get('pk')
-            cantidad = int(request.POST.get('cantidad'))
+            cantidadf = int(request.POST.get('cantidad'))
             ingresos = get_object_or_404(Inventario, pk=pk)
             #ingresos = Inventario.objects.filter(id=pk)
             cantidadact = ingresos.cantidad
-            cantidad = cantidadact-cantidad
+            cantidad = cantidadact-cantidadf
             ingresos.cantidad = cantidad
             ingresos.save()
-            rsalida = regSalida(inventario=Inventario.objects.get(id=pk),  cantidad=cantidad, fecha=datetime.date.today(), hora=time.strftime("%X"))
+            rsalida = regSalida(inventario=Inventario.objects.get(id=pk),  cantidad=cantidadf, fecha=datetime.date.today(), hora=time.strftime("%X"))
             rsalida.save()
             form = BuscarCodigoForm()
             inventarios = Inventario.objects.select_related('producto')

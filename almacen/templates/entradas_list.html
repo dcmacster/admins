@@ -1,21 +1,39 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-<h1>Lista de Productos</h1>
+<h1>Lista Entrada de Productos</h1>
 
 
 {% if entrada_list %}
-<ul>
-
+<div class="container-fluid">
+    <table class="table table-striped table-sm" id="my_entrada">
+        <thead>
+            <tr>
+                <th>Codigo</th>
+                <th>Producto</th>
+                <th>Cantidad</th>
+                <th>Fecha Salida</th>
+                <th>Hora Salida</th>
+            </tr>
+        </thead>
+        <tbody id="my_registro">
     {% for entrada in entrada_list %}
-    <li>
-       {{ entrada.inventario.codigob }} ({{entrada.inventario.producto.nombre}}) {{entrada.cantidad}} {{entrada.fecha}}
-       {{entrada.hora}}
+   <tr>
+      <td> {{entrada.inventario.codigob }}</td>
+      <td> {{entrada.inventario.producto.nombre}}</td>
+      <td> {{entrada.cantidad}}</td>
+      <td> {{entrada.fecha}}</td>
+      <td> {{entrada.hora}}</td>
+       
 
-    </li>
+ </tr>
     {% endfor %}
+</tbody>
+</table>
 
-</ul>
+</div>
+
+
 {% else %}
 <p>No hay registro de entradas en el almacen.</p>
 {% endif %}

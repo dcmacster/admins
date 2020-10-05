@@ -1,20 +1,41 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-<h1>Lista de Productos</h1>
+<h1>Lista Salida de Productos</h1>
 
 
 {% if salida_list %}
-<ul>
 
+    <div class="container-fluid">
+        <table class="table table-striped table-sm" id="my_entrada">
+            <thead>
+                <tr>
+                    <th>Codigo</th>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Fecha Salida</th>
+                    <th>Hora Salida</th>
+                </tr>
+            </thead>
+        <tbody id="my_registro">
     {% for salida in salida_list %}
-    <li>
-       {{ salida.inventario.codigob }} ({{salida.inventario.producto.nombre}}) {{salida.cantidad}} {{salida.fecha}} {{salida.hora}}
+    
+       <tr>
+           <td>{{ salida.inventario.codigob }}</td>
+           <td>{{salida.inventario.producto.nombre}}</td>
+           <td> {{salida.cantidad}}</td>
+           <td>{{salida.fecha}}</td>
+           <td>{{salida.hora}}</td>
+           </tr>
 
-    </li>
+    
     {% endfor %}
+  </tbody>
+  </table>
 
-</ul>
+  </div>
+
+
 {% else %}
 <p>No hay registro de salidas en el almacen.</p>
 {% endif %}
