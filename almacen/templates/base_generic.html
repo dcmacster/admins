@@ -16,21 +16,38 @@
 
         <body>
 
+
+            
+             
+
             <div class="container-fluid">
 
                 <div class="row">
                     <div class="col-sm-2">
                         {% block sidebar %}
-                        <ul class="sidebar-nav">
-                            <li><a href="{% url 'index' %}">Home</a></li>
-                            <li><a href="{% url 'producto' %}">Lista de Productos</a></li>
-                            <li><a href="{% url 'entrada' %}">Ingreso de Productos</a></li>
-                            <li><a href="{% url 'salida' %}">Salida de Productos</a></li>
-                            <li><a href="{% url 'lentradas' %}">Lista de registro de Entradas</a></li>
-                            <li><a href="{% url 'lsalidas' %}">Lista de registro de Salidas</a></li>
-                            <li><a href="../admin/">Alta de producto</a></li>
-                            
-                        </ul>
+                        <nav class="navbar navbar-inverse">
+                        <div class="container-fluid">
+                            <div class="navbar-header">
+                                <a class="navbar-brand" href="#">Menu</a>
+                            </div>
+                            <ul class="nav navbar-nav">
+                                <li role="presentation"><a href="{% url 'index' %}">Home</a></li>
+                                <li role="presentation"><a href="{% url 'producto' %}">Lista de Productos</a>
+                                </li>
+                                <li role="presentation"><a href="{% url 'entrada' %}">Ingreso de Productos</a></li>
+                                <li role="presentation"><a href="{% url 'salida' %}">Salida de Productos</a></li>
+                                <li role="presentation"><a href="{% url 'lentradas' %}">Lista de registro de Entradas</a>
+                                </li>
+                                <li role="presentation"><a href="{% url 'lsalidas' %}">Lista de registro de Salidas</a></li>
+                                <li role="presentation"><a href="/../admin/">Alta de producto</a></li>
+                            </ul>
+                        </div>
+                        </nav>
+
+
+                      
+                       
+                   
                         {% endblock %}
                     </div>
                     <div class="col-sm-10 ">
