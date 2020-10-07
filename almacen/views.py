@@ -3,7 +3,9 @@ from django.contrib.auth import login, authenticate
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.core import serializers
 from django.db.models import Max, Min, Count, Sum, Avg
-#from .models import Book, Author, BookInstance, Genre, Language, Perfil
+
+from django.core.paginator import Paginator
+
 from django.views import generic
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -12,7 +14,7 @@ from django.urls import reverse, reverse_lazy
 import datetime
 import time
 import json
-#from .forms import SingUpForm, RenewBookForm, OnloanBookForm, MaintenanceBookForm, AviableBookForm
+
 
 
 # Create your views here.
@@ -36,9 +38,12 @@ class ProductoListView(generic.ListView):
 
 def ProductoListView(request):
     producto_list=Producto.objects.all().annotate(Cant_total=Sum('inventario__cantidad'))
+    paginator = Paginator(producto_list, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     return render(
         request,'producto_list.html',
-       {'producto_list':producto_list}
+        {'page_obj': page_obj}
     )
 
 def EntradaView(request):
@@ -132,21 +137,23 @@ def postReducir(request):
 
 def EntradaListView(request):
     entrada_list = regEntrada.objects.select_related('inventario__producto')
-    #entrada_list = regEntrada.objects.all()
+    paginator = Paginator(entrada_list, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     return render(
         request, 'entradas_list.html',
-        {'entrada_list': entrada_list}
-    )
-
-
+        {'page_obj': page_obj}
+        )
+   
 def SalidaListView(request):
     salida_list = regSalida.objects.select_related('inventario__producto')
-    #salida_list= regSalida.objects.get(id=7)
+    paginator = Paginator(salida_list, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     return render(
         request, 'salidas_list.html',
-        {'salida_list': salida_list}
-    )
-
+        {'page_obj': page_obj}
+        )
 
 '''
 *****para trabajar con ajax*****

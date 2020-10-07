@@ -7,7 +7,7 @@
     </div>
 </div>
 
-{% if salida_list %}
+{% if page_obj %}
 
     <div class="container-fluid">
         <table class="table table-striped table-sm" id="my_entrada">
@@ -21,7 +21,7 @@
                 </tr>
             </thead>
         <tbody id="my_registro">
-    {% for salida in salida_list %}
+    {% for salida in page_obj %}
     
        <tr>
            <td>{{ salida.inventario.codigob }}</td>
@@ -37,7 +37,19 @@
   </table>
 
   </div>
-
+<div class="pagination">
+    <span class="page-links">
+        {% if page_obj.has_previous %}
+        <a href="{{ request.path }}?page={{ page_obj.previous_page_number }}">previous</a>
+        {% endif %}
+        <span class="page-current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span>
+        {% if page_obj.has_next %}
+        <a href="{{ request.path }}?page={{ page_obj.next_page_number }}">next</a>
+        {% endif %}
+    </span>
+</div>
 
 {% else %}
 <p>No hay registro de salidas en el almacen.</p>
