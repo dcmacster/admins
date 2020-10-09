@@ -35,3 +35,18 @@ class EntradaCantidadForm(forms.Form):
     class Meta:
         model=Inventario
         fields=("__all__")    
+
+
+class BuscarProductForm(forms.Form):
+    producto = forms.CharField(max_length=140, required=True, help_text="Ingrese producto a buscar")
+    
+    def __init__(self,*args, **kwargs):
+        super(BuscarProductForm, self).__init__(*args, **kwargs)
+        for name in self.fields.keys():
+            self.fields[name].widget.attrs.update({
+                'class':'form-control',
+            })
+
+    class Meta:
+        model=Producto
+        fields=("__all__")    

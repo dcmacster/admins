@@ -15,5 +15,5 @@ urlpatterns = [
     url(r'^reduccion/', views.postReducir, name='reduccion'),
     url(r'^lentradas/', views.EntradaListView,name='lentradas'),
     url(r'^lsalidas/', views.SalidaListView,name='lsalidas'),
-
+    url(r'^consultar/', views.postConsultar, name='consultar'),
 ]

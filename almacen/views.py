@@ -19,7 +19,7 @@ import json
 
 # Create your views here.
 from .models import Producto,Inventario,Imagen, regEntrada, regSalida
-from .forms import BuscarCodigoForm, EntradaCantidadForm
+from .forms import BuscarCodigoForm, EntradaCantidadForm, BuscarProductForm
 
 def index(request):
     mensage='Bienvenido '
@@ -37,14 +37,44 @@ class ProductoListView(generic.ListView):
 '''
 
 def ProductoListView(request):
+    form = BuscarProductForm()
     producto_list=Producto.objects.all().annotate(Cant_total=Sum('inventario__cantidad'))
     paginator = Paginator(producto_list, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     return render(
         request,'producto_list.html',
-        {'page_obj': page_obj}
+        {'form':form,'page_obj': page_obj}
     )
+
+
+def postConsultar(request):
+    if request.method == 'POST':
+        form = BuscarProductForm(request.POST)
+        if form.is_valid():
+            busproducto=request.POST.get('producto')
+            form = BuscarProductForm()
+            producto_list = Producto.objects.filter(nombre__icontains=busproducto).annotate(Cant_total=Sum('inventario__cantidad')) | Producto.objects.filter(descripcion__icontains=busproducto).annotate(Cant_total=Sum('inventario__cantidad'))
+            paginator = Paginator(producto_list, 10)
+            page_number = request.GET.get('page')
+            page_obj = paginator.get_page(page_number)
+            return render(
+                request, 'producto_list.html',
+                {'form':form,'page_obj': page_obj}
+            )
+            
+    else:
+        form = BuscarProductForm()
+        producto_list = Producto.objects.all().annotate(Cant_total=Sum('inventario__cantidad'))
+        paginator = Paginator(producto_list, 10)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        return render(
+            request, 'producto_list.html',
+            {'form':form, 'page_obj': page_obj}
+        )
+       
+
 
 def EntradaView(request):
     form = BuscarCodigoForm()
