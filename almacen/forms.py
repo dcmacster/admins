@@ -50,3 +50,38 @@ class BuscarProductForm(forms.Form):
     class Meta:
         model=Producto
         fields=("__all__")    
+
+
+class ProductoForm(forms.Form):
+    producto = forms.CharField(max_length=140, required=True, help_text="nombre del producto")
+    descripcion=forms.CharField(required=False,help_text="Descripcion del producto",widget=forms.Textarea(attrs={'col':80,'rows':20,'style':'resize none'}))
+    Minimo=forms.IntegerField(required=True,help_text="Cantidad Minima de producto en almacen")
+    Maximo=forms.IntegerField(required=True,help_text="Cantidad Maxima de producto en almacen")
+    def __init__(self, *args, **kwargs):
+        super(ProductoForm, self).__init__(*args, **kwargs)
+        for name in self.fields.keys():
+            self.fields[name].widget.attrs.update({
+                'class': 'form-control',
+            })
+
+    class Meta:
+        model = Producto
+        fields = ("__all__")
+        
+class ProductoFormE(forms.Form):
+    pk=forms.CharField(widget=forms.HiddenInput())
+    accion=forms.CharField(widget=forms.HiddenInput())
+    producto = forms.CharField(max_length=140, required=True, help_text="nombre del producto")
+    descripcion=forms.CharField(required=False,help_text="Descripcion del producto",widget=forms.Textarea(attrs={'col':80,'rows':20,'style':'resize none'}))
+    Minimo=forms.IntegerField(required=True,help_text="Cantidad Minima de producto en almacen")
+    Maximo=forms.IntegerField(required=True,help_text="Cantidad Maxima de producto en almacen")
+    def __init__(self, *args, **kwargs):
+        super(ProductoFormE, self).__init__(*args, **kwargs)
+        for name in self.fields.keys():
+            self.fields[name].widget.attrs.update({
+                'class': 'form-control',
+            })
+
+    class Meta:
+        model = Producto
+        fields = ("__all__")

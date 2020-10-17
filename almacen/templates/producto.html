@@ -1,0 +1,28 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<div class="jumbotron">
+    <div class="container">
+<h1>Alta de Productos</h1>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <form method="POST" id="producto-form" action="{% url 'producto' %}">
+        <div class="row">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="form-group col-4">
+                <label class="col-12">{{ field.label }}</label>
+                {{ field }}
+            </div>
+            {% endfor %}
+            <input type="reset" class="btn btn-primary" value="Cancelar" />
+            <input type="submit" class="btn btn-primary" value="Guardar" />            
+        </div>
+    </form>
+</div>
+
+{{ mensaje }}
+
+{% endblock %}

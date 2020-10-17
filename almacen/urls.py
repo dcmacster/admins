@@ -5,8 +5,11 @@ from . import views
 urlpatterns = [
 
     url(r'^$',views.index,name='index'),
-    #url(r'^producto/', views.ProductoListView.as_view(),name='producto'),
-    url(r'^producto/', views.ProductoListView,name='producto'),
+    url(r'^producto/crear', views.ProductoCrear,name='producto'),
+    url(r'^producto/(?P<id>[-\w]+)/detalle',views.ProductoDetalle, name='producto-detail'),
+    url(r'^lproducto/', views.ProductoEliminar,name='eliminarp'),
+    url(r'^producto/editar', views.ProductoEditar,name='editarp'),
+    url(r'^lproducto/', views.ProductoListView,name='lproducto'),
     url(r'^entrada/',views.EntradaView,name='entrada'),
     url(r'^buscar/',views.postBuscar,name='buscar'),
     url(r'^ingresar/', views.postIngresar, name='ingresar'),
@@ -15,5 +18,6 @@ urlpatterns = [
     url(r'^reduccion/', views.postReducir, name='reduccion'),
     url(r'^lentradas/', views.EntradaListView,name='lentradas'),
     url(r'^lsalidas/', views.SalidaListView,name='lsalidas'),
-    url(r'^consultar/', views.postConsultar, name='consultar'),
+
+    
 ]

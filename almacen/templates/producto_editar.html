@@ -1,0 +1,39 @@
+{% extends "base_generic.html" %}
+{% block content %}
+<div class="jumbotron">
+    <div class="container">
+<h1>Editar de Productos</h1>
+    </div>
+</div>
+
+
+<div class="panel panel-primary">
+    <div class="panel-heading">Producto</div>
+        <div class="panel-body">
+            <div class="container-fluid">
+                <form method="POST" id="producto-form" action="{% url 'editarp' %}">
+                    <div class="row">
+                        {% csrf_token %}
+                        
+                        <div class="form-group col-4">
+                            {{ form.pk }}
+                            {{ form.accion }}
+                            <label class="col-12">Producto</label>
+                            {{ form.producto }}
+                            <label class="col-12">Descripcion</label>
+                            {{ form.descripcion }}
+                            <label class="col-12">Minimo</label>
+                            {{ form.Minimo }}
+                            <label class="col-12">Maximo</label>
+                            {{ form.Maximo }}
+                        </div>      
+                        
+                        
+                        <input type="submit" class="btn btn-primary" value="Guardar" />            
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

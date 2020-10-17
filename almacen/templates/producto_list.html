@@ -9,7 +9,7 @@
 
 
 <div class="container-fluid">
-    <form method="POST" id="consulta-form" action="{% url 'consultar' %}">
+    <form method="POST" id="consulta-form" action="{% url 'lproducto' %}">
         <div class="row">
             {% csrf_token %}
             {% for field in form %}
@@ -39,14 +39,31 @@
         <tbody id="my_registro">
     {% for producto in page_obj %}
    
-       <tr>
-           <td> {{ producto.nombre }} </td>
+       <tr> 
+           <td><a href="{% url 'producto-detail' producto.id %}"> {{ producto.nombre }}</a> </td>
            <td>{{producto.descripcion}}</td>
            <td> {{producto.minimo}}</td>
            <td> {{producto.maximo}}</td>
            <td>
                {{producto.Cant_total}}
-               </td></tr>
+               </td>
+            <td>
+                <form method="POST" id="eliminar-form" action="{% url 'eliminarp' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="pk" value="{{producto.id}}" >
+                    <input type="submit" class="btn btn-primary" value="Eliminar" />
+                </form>
+            </td>
+            <td>
+                <form method="POST" id="editar-form" action="{% url 'editarp' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="pk" value="{{producto.id}}" >
+                    <input type="hidden" name="accion" value="1" >
+                    <input type="submit" class="btn btn-primary" value="Editar" />
+                </form>
+            </td>
+
+        </tr>
         
    
     {% endfor %}
