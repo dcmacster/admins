@@ -21,9 +21,10 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('/', RedirectView.as_view(url='/almacen/', permanent=True)),
-    path('', RedirectView.as_view(url='/almacen/', permanent=True)),
+    #path('/', RedirectView.as_view(url='/almacen/', permanent=True)),
+    path('', RedirectView.as_view(url='/compras/', permanent=True)),
     path('almacen/', include('almacen.urls')),
+    path('compras/', include('compras.urls')),
     path('admin/', admin.site.urls),
     
    

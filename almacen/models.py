@@ -11,7 +11,7 @@ from datetime import date
 
 
 class Producto(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, help_text="ID único para este libro particular en toda la biblioteca")
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, help_text="ID único para este producto")
     nombre = models.CharField(max_length=200)
     descripcion = models.TextField(max_length=1000,  help_text="Ingrese una breve descripción del producto")
     minimo = models.IntegerField(default=0)

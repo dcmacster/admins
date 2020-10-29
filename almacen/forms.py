@@ -85,3 +85,19 @@ class ProductoFormE(forms.Form):
     class Meta:
         model = Producto
         fields = ("__all__")
+
+class InventarioForm(forms.Form):
+    producto = forms.ModelChoiceField(queryset=Producto.objects.all(),empty_label=None)
+    codigo=forms.CharField(required=False,help_text="Descripcion del producto",widget=forms.Textarea(attrs={'col':80,'rows':20,'style':'resize none'}))
+    cantidad=forms.IntegerField(required=True,help_text="Cantidad Minima de producto en almacen")
+    
+    def __init__(self, *args, **kwargs):
+        super(InventarioForm, self).__init__(*args, **kwargs)
+        for name in self.fields.keys():
+            self.fields[name].widget.attrs.update({
+                'class': 'form-control',
+            })
+
+    class Meta:
+        model = Inventario
+        fields = ("__all__")

@@ -16,6 +16,9 @@ class ProductoAdmin(admin.ModelAdmin):
     list_display=('nombre','descripcion','minimo','maximo')
     fields=['nombre','descripcion',('minimo','maximo')]
     inlines = [ProductoInventarioInline, ProductoImagenInline]
+    search_fields=['nombre','descripcion']
+    list_filter=['minimo','maximo']
+
 
 @admin.register(Inventario)
 class InventarioAdmin(admin.ModelAdmin):
