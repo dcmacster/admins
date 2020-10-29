@@ -1,0 +1,58 @@
+{% extends "base_compra.html" %}
+
+{% block title %}<title>Compras - Detalle Proveedor</title>{% endblock %}
+{% block content %}
+<div class="jumbotron">
+    <div class="container">
+<h1>Detalle de Proveedor</h1>
+    </div>
+</div>
+
+
+<div class="panel panel-primary">
+    <div class="panel-heading">Proveedor</div>
+        <div class="panel-body">
+
+            <div class="container-fluid">
+                 <table class="table table-striped table-sm" id="my_salida">
+                    
+                    <tbody id="my_registro">
+                   {% for proveedord in proveedor %}
+                        <tr>
+                            <td>Nombre: </td>
+                            <td>{{provedord.nombre}}</td>
+                        </tr>    
+                        <tr>
+                            <td>Direccion: </td>
+                            <td>{{proveedord.direccion}}</td>
+
+                        </tr>
+                        <tr>
+                            <td>Contacto: </td>
+                            <td>{{proveedord.Contacto}}</td>
+                            <td>Email: </td>
+                            <td> {{proveedord.email}}</td>
+
+                        </tr>
+                        <tr>
+                            <td>Telefono: </td>
+                            <td> {{proveedord.telefono}}</td>
+                            <td>Celular: </td>
+                            <td> {{proveedord.celular}}</td>
+
+                        </tr>
+                       <tr>
+                            <td>Observacion: </td>
+                            <td>{{proveedord.observacion}}</td>
+
+                        </tr>                        
+                    {% endfor %}
+                    </tbody>
+                </table>
+
+             </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

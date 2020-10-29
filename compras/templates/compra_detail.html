@@ -1,0 +1,78 @@
+{% extends "base_compra.html" %}
+
+{% block title %}<title>Compras - Detalle</title>{% endblock %}
+{% block content %}
+<div class="jumbotron">
+    <div class="container">
+<h1>Detalle de Compra</h1>
+    </div>
+</div>
+
+
+<div class="panel panel-primary">
+    <div class="panel-heading">Encabezado</div>
+        <div class="panel-body">
+
+            <div class="container-fluid">
+                 <table class="table table-striped table-sm" id="my_salida">
+                    
+                    <tbody id="my_registro">
+                   {% for ecompra in encabezado %}
+                        <tr>
+                            <td>Proveedor: </td>
+                            <td>{{ecompra.proveedor.nombre}}</td>
+                        </tr>    
+                        <tr>
+                            <td>Factura: </td>
+                            <td>{{ecompra.factura}}</td>
+                            <td>Pedido: </td>
+                            <td>{{ecompra.pedido}}</td>
+
+                        </tr>
+                        <tr>
+                            <td>Subtotal: </td>
+                            <td>{{ecompra.subtotal}}</td>
+                            <td>IVA: </td>
+                            <td> {{ecompra.iva}}</td>
+                            <td>Total: </td>
+                            <td> {{ecompra.total}}</td>
+
+                        </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+</div>
+
+<div class="panel panel-danger">
+    <div class="panel-heading">Detalle</div>
+        <div class="panel-body">
+<div class="container-fluid">
+    <table class="table table-striped table-sm" id="my_salida">
+        <thead>
+            <tr>
+                <th>Producto</th>
+                <th>Cantidad</th>
+                <th>Precio</th>
+                <th>Importe</th>
+            </tr>
+        </thead>
+        <tbody id="my_registro">
+            {% for dcompra in detalle %}
+            <tr>
+                <td>{{dcompra.almacen.producto.nombre}}</td>
+                <td>{{dcompra.cantidad}}</td>
+                <td>{{dcompra.precio}}</td>
+                <td>{{dcompra.total}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+</div>
+</div>
+
+</div>
+{% endblock %}

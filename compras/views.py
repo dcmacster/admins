@@ -1,3 +1,4 @@
+# Create your views here.
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth import login, authenticate
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
@@ -15,144 +16,195 @@ import datetime
 import time
 import json
 
-
-
 # Create your views here.
-from .models import Producto,Inventario,Imagen, regEntrada, regSalida
-from .forms import BuscarCodigoForm, EntradaCantidadForm, BuscarProductForm, ProductoForm, ProductoFormE, InventarioForm
+from almacen.models import Producto, Inventario
+from .models import Proveedor,ECompra,DCompra
+from .forms import BuscarCodigoForm,  BuscarProveedorForm
+
+
 
 def index(request):
-    mensage='Bienvenido '
+    mensage = 'Bienvenido '
 
     return render(
-        request,'index.html',
-        context={'mensage':mensage}
+        request, 'compra_index.html',
+        context={'mensage': mensage}
     )
+
 
 '''
 class ProductoListView(generic.ListView):
     redirect_field_name = 'redirect_to'
     model = Producto
     paginate_by = 10
-'''
+
 
 
 def ProductoCrear(request):
     if request.method == 'POST':
         form = ProductoForm(request.POST)
         if form.is_valid():
-            regproducto = Producto(nombre=form['producto'].value(), descripcion=form['descripcion'].value(), minimo=form['Minimo'].value(), maximo=form['Maximo'].value())
+            regproducto = Producto(nombre=form['producto'].value(), descripcion=form['descripcion'].value(
+            ), minimo=form['Minimo'].value(), maximo=form['Maximo'].value())
             regproducto.save()
-            mensaje='Producto guardado con Exito'
+            mensaje = 'Producto guardado con Exito'
     else:
-        mensaje=''
-    
+        mensaje = ''
+
     form = ProductoForm()
     return render(
         request, 'producto.html',
         {'form': form, 'mensaje': mensaje}
     )
+'''
 
-
-def ProductoDetalle(request,id=id):
+def ProveedorDetalle(request, id=id):
     if request.method == 'GET':
-        busproducto = request.GET.get('id')
-        producto_det = Producto.objects.filter(id=id).annotate(Cant_total=Sum('inventario__cantidad')) 
+        busproveedor = request.GET.get('id')
+        proveedor_det = Proveedor.objects.filter(id=id)
         inventario_det = Inventario.objects.filter(producto=id)
+
         return render(
-            request, 'producto_detail.html',
-            {'producto': producto_det, 'inventario':inventario_det}
+            request, 'proveedor_detail.html',
+            {'proveedor': proveedor_det, 'inventario': inventario_det}
         )
 
     else:
-        producto_list = Producto.objects.all().annotate(
-            Cant_total=Sum('inventario__cantidad'))
-        form = BuscarProductForm()
-        paginator = Paginator(producto_list, 10)
+        proveedor_list = Proveedor.objects.all()
+        form = BuscarProveedorForm()
+        paginator = Paginator(proveedor_list, 10)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
         return render(
-                request, 'producto_list.html',
-                {'form': form, 'page_obj': page_obj}
-            )
+            request, 'proveedor_list.html',
+            {'form': form, 'page_obj': page_obj}
+        )
 
 
-
-def ProductoListView(request):
+def ProveedorListView(request):
     if request.method == 'POST':
-        form = BuscarProductForm(request.POST)
+        form = BuscarProveedorForm(request.POST)
         if form.is_valid():
-            busproducto = request.POST.get('producto')
-            producto_list = Producto.objects.filter(nombre__icontains=busproducto).annotate(Cant_total=Sum('inventario__cantidad')) | Producto.objects.filter(descripcion__icontains=busproducto).annotate(Cant_total=Sum('inventario__cantidad'))
+            busproveedor = request.POST.get('proveedor')
+            proveedor_list = Proveedor.objects.filter(nombre__icontains=busproveedor)# | Proveedor.objects.filter(descripcion__icontains=busproducto).annotate(Cant_total=Sum('inventario__cantidad'))
     else:
-        producto_list = Producto.objects.all().annotate(
-           Cant_total=Sum('inventario__cantidad'))
-   
-    form = BuscarProductForm()
-    paginator = Paginator(producto_list, 10)
+        proveedor_list = Proveedor.objects.all()
+
+    form = BuscarProveedorForm()
+    paginator = Paginator(proveedor_list, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     return render(
-        request,'producto_list.html',
-        {'form':form,'page_obj': page_obj}
+        request, 'proveedor_list.html',
+        {'form': form, 'page_obj': page_obj}
     )
 
+
+def CompraListView(request):
+
+    if request.method == 'POST':
+        form = BuscarProveedorForm(request.POST)
+        if form.is_valid():
+            busproveedor = request.POST.get('proveedor')
+            ecompra_list = ECompra.objects.select_related('proveedor').filter(
+                proveedor__nombre__icontains=busproveedor)
+    else:
+        ecompra_list = ECompra.objects.select_related(
+            'proveedor').all()
+
+    form = BuscarProveedorForm()
+    paginator = Paginator(ecompra_list, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(
+        request, 'compra_list.html',
+        {'form': form, 'page_obj': page_obj}
+    )
+
+
+def CompraDetalle(request, id=id):
+    if request.method == 'GET':
+        busproveedor = request.GET.get('id')
+        ecompra_det = ECompra.objects.select_related('proveedor').filter(id=id)
+        dcompra_det = DCompra.objects.select_related('almacen__producto').filter(compra=id)
+
+        return render(
+            request, 'compra_detail.html',
+            {'encabezado': ecompra_det, 'detalle': dcompra_det}
+        )
+
+    else:
+        ecompra_list = ECompra.objects.select_related('proveedor').all()
+
+        form = BuscarProveedorForm()
+        paginator = Paginator(ecompra_list, 10)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        return render(
+            request, 'compra_list.html',
+            {'form': form, 'page_obj': page_obj}
+        )
+
+
+'''
 def ProductoEliminar(request):
     if request.method == 'POST':
         busproducto = request.POST.get('pk')
-        producto_inst=get_object_or_404(Producto, pk = busproducto)
-        producto_inst.delete()    
-    
-    producto_list = Producto.objects.all().annotate(Cant_total=Sum('inventario__cantidad'))
+        producto_inst = get_object_or_404(Producto, pk=busproducto)
+        producto_inst.delete()
+
+    producto_list = Producto.objects.all().annotate(
+        Cant_total=Sum('inventario__cantidad'))
     form = BuscarProductForm()
     paginator = Paginator(producto_list, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     return render(
-        request,'producto_list.html',
-        {'form':form,'page_obj': page_obj}
+        request, 'producto_list.html',
+        {'form': form, 'page_obj': page_obj}
     )
 
 
 def ProductoEditar(request):
     if request.method == 'POST':
-        accion=request.POST.get('accion')
+        accion = request.POST.get('accion')
         pk = request.POST.get('pk')
         producto_det = get_object_or_404(Producto, pk=pk)
-        if int(accion)==1:
-            
+        if int(accion) == 1:
+
             #producto_det = Producto.objects.filter(id=id)
-            data={
-                'pk':producto_det.id,
-                'accion':'2',
-                'producto':producto_det.nombre,
-                'descripcion':producto_det.descripcion,
-                'Minimo':producto_det.minimo,
-                'Maximo':producto_det.maximo
+            data = {
+                'pk': producto_det.id,
+                'accion': '2',
+                'producto': producto_det.nombre,
+                'descripcion': producto_det.descripcion,
+                'Minimo': producto_det.minimo,
+                'Maximo': producto_det.maximo
             }
             form = ProductoFormE(initial=data)
             return render(
                 request, 'producto_editar.html',
                 {'form': form}
             )
-        elif int(accion)==2:
-            
-            form=ProductoFormE(request.POST)
+        elif int(accion) == 2:
+
+            form = ProductoFormE(request.POST)
             if form.is_valid():
-                producto_det.nombe=form['producto'].value()
-                producto_det.descripcion=form['descripcion'].value()
-                producto_det.minimo=form['Minimo'].value()
-                producto_det.maximo=form['Maximo'].value()
+                producto_det.nombe = form['producto'].value()
+                producto_det.descripcion = form['descripcion'].value()
+                producto_det.minimo = form['Minimo'].value()
+                producto_det.maximo = form['Maximo'].value()
                 producto_det.save()
-            
-            producto_list = Producto.objects.all().annotate(Cant_total=Sum('inventario__cantidad')) 
+
+            producto_list = Producto.objects.all().annotate(
+                Cant_total=Sum('inventario__cantidad'))
             form = BuscarProductForm()
             paginator = Paginator(producto_list, 10)
             page_number = request.GET.get('page')
             page_obj = paginator.get_page(page_number)
             return render(
-                request,'producto_list.html',
-                {'form':form,'page_obj': page_obj}
+                request, 'producto_list.html',
+                {'form': form, 'page_obj': page_obj}
             )
         else:
             mensage = 'Bienvenido '
@@ -161,53 +213,55 @@ def ProductoEditar(request):
                 context={'mensage': mensage}
             )
     else:
-        producto_list = Producto.objects.all().annotate(Cant_total=Sum('inventario__cantidad'))
+        producto_list = Producto.objects.all().annotate(
+            Cant_total=Sum('inventario__cantidad'))
         form = BuscarProductForm()
         paginator = Paginator(producto_list, 10)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
         return render(
-            request,'producto_list.html',
-            {'form':form,'page_obj': page_obj}
+            request, 'producto_list.html',
+            {'form': form, 'page_obj': page_obj}
         )
-       
+
+
 def InventarioCrear(request):
     if request.method == 'POST':
         form = InventarioForm(request.POST)
         if form.is_valid():
-            regproducto = Inventario(producto=form['producto'].value(), codigob=form['codigo'].value(), cantidad=form['cantidad'].value())
+            regproducto = Inventario(producto=form['producto'].value(
+            ), codigob=form['codigo'].value(), cantidad=form['cantidad'].value())
             regproducto.save()
-            mensaje='Producto guardado con Exito'
+            mensaje = 'Producto guardado con Exito'
     else:
-        mensaje=''
-    
+        mensaje = ''
+
     form = InventarioForm()
     return render(
         request, 'producto.html',
         {'form': form, 'mensaje': mensaje}
     )
-        
 
 
 def EntradaView(request):
     form = BuscarCodigoForm()
-    inventarios=Inventario.objects.select_related('producto')
-    return render(request,"entrada.html",{"form":form,"inventarios":inventarios})
-
+    inventarios = Inventario.objects.select_related('producto')
+    return render(request, "entrada.html", {"form": form, "inventarios": inventarios})
 
 
 def postBuscar(request):
     if request.method == 'POST':
         form = BuscarCodigoForm(request.POST)
         if form.is_valid():
-            buscodigo=request.POST.get('codigo')
+            buscodigo = request.POST.get('codigo')
             form = EntradaCantidadForm()
-            inventarios = Inventario.objects.filter(codigob=buscodigo).select_related('producto')
-            return render(request,"ingreso.html",{"form":form,"inventarios":inventarios})
+            inventarios = Inventario.objects.filter(
+                codigob=buscodigo).select_related('producto')
+            return render(request, "ingreso.html", {"form": form, "inventarios": inventarios})
     else:
         form = BuscarCodigoForm()
-        inventarios=Inventario.objects.select_related('producto')
-        return render(request,"entrada.html",{"form":form,"inventarios":inventarios})
+        inventarios = Inventario.objects.select_related('producto')
+        return render(request, "entrada.html", {"form": form, "inventarios": inventarios})
 
 
 def postIngresar(request):
@@ -216,11 +270,11 @@ def postIngresar(request):
         if form.is_valid():
             pk = request.POST.get('pk')
             cantidadf = int(request.POST.get('cantidad'))
-            ingresos=get_object_or_404(Inventario, pk = pk)
+            ingresos = get_object_or_404(Inventario, pk=pk)
             #ingresos = Inventario.objects.filter(id=pk)
             cantidadact = ingresos.cantidad
-            cantidad=cantidadf+cantidadact
-            ingresos.cantidad=cantidad
+            cantidad = cantidadf+cantidadact
+            ingresos.cantidad = cantidad
             ingresos.save()
             rentrada = regEntrada(inventario=Inventario.objects.get(id=pk), cantidad=cantidadf,
                                   fecha=datetime.date.today(), hora=time.strftime("%X"))
@@ -233,10 +287,11 @@ def postIngresar(request):
         inventarios = Inventario.objects.select_related('producto')
         return render(request, "entrada.html", {"form": form, "inventarios": inventarios})
 
+
 def SalidaView(request):
     form = BuscarCodigoForm()
-    inventarios=Inventario.objects.select_related('producto')
-    return render(request,"salida.html",{"form":form,"inventarios":inventarios})
+    inventarios = Inventario.objects.select_related('producto')
+    return render(request, "salida.html", {"form": form, "inventarios": inventarios})
 
 
 def postSbuscar(request):
@@ -258,7 +313,7 @@ def postReducir(request):
     if request.method == 'POST':
         form = EntradaCantidadForm(request.POST)
         if form.is_valid():
-           
+
             pk = request.POST.get('pk')
             cantidadf = int(request.POST.get('cantidad'))
             ingresos = get_object_or_404(Inventario, pk=pk)
@@ -267,7 +322,8 @@ def postReducir(request):
             cantidad = cantidadact-cantidadf
             ingresos.cantidad = cantidad
             ingresos.save()
-            rsalida = regSalida(inventario=Inventario.objects.get(id=pk),  cantidad=cantidadf, fecha=datetime.date.today(), hora=time.strftime("%X"))
+            rsalida = regSalida(inventario=Inventario.objects.get(
+                id=pk),  cantidad=cantidadf, fecha=datetime.date.today(), hora=time.strftime("%X"))
             rsalida.save()
             form = BuscarCodigoForm()
             inventarios = Inventario.objects.select_related('producto')
@@ -277,26 +333,6 @@ def postReducir(request):
         inventarios = Inventario.objects.select_related('producto')
         return render(request, "salida.html", {"form": form, "inventarios": inventarios})
 
-
-def EntradaListView(request):
-
-    if request.method == 'POST':
-        form = BuscarProductForm(request.POST)
-        if form.is_valid():
-            busproducto=request.POST.get('producto')
-            entrada_list = regEntrada.objects.select_related('inventario__producto').filter(inventario__producto__nombre__icontains=busproducto)
-    else:
-        entrada_list = regEntrada.objects.select_related('inventario__producto')
-    
-    form = BuscarProductForm()
-    paginator = Paginator(entrada_list, 10)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-    return render(
-        request, 'entradas_list.html',
-        {'form':form, 'page_obj': page_obj}
-        )
-   
 def SalidaListView(request):
     salida_list = regSalida.objects.select_related('inventario__producto')
     paginator = Paginator(salida_list, 10)
@@ -305,9 +341,10 @@ def SalidaListView(request):
     return render(
         request, 'salidas_list.html',
         {'page_obj': page_obj}
-        )
+    )
 
-'''
+
+
 *****para trabajar con ajax*****
 
 
