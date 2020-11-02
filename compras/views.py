@@ -15,14 +15,14 @@ from django.urls import reverse, reverse_lazy
 import datetime
 import time
 import json
-
+from django.forms import formset_factory
 # Create your views here.
 from almacen.models import Producto, Inventario
 from .models import Proveedor,ECompra,DCompra
-from .forms import BuscarCodigoForm,  BuscarProveedorForm
+from .forms import BuscarCodigoForm,  BuscarProveedorForm, ECompraForm, DCompraForm
 
 
-
+@login_required(login_url='/accounts/login/')
 def index(request):
     mensage = 'Bienvenido '
 
@@ -57,7 +57,7 @@ def ProductoCrear(request):
         {'form': form, 'mensaje': mensaje}
     )
 '''
-
+@login_required(login_url='/accounts/login/')
 def ProveedorDetalle(request, id=id):
     if request.method == 'GET':
         busproveedor = request.GET.get('id')
@@ -81,6 +81,7 @@ def ProveedorDetalle(request, id=id):
         )
 
 
+@login_required(login_url='/accounts/login/')
 def ProveedorListView(request):
     if request.method == 'POST':
         form = BuscarProveedorForm(request.POST)
@@ -100,6 +101,7 @@ def ProveedorListView(request):
     )
 
 
+@login_required(login_url='/accounts/login/')
 def CompraListView(request):
 
     if request.method == 'POST':
@@ -122,11 +124,12 @@ def CompraListView(request):
     )
 
 
+@login_required(login_url='/accounts/login/')
 def CompraDetalle(request, id=id):
     if request.method == 'GET':
         busproveedor = request.GET.get('id')
         ecompra_det = ECompra.objects.select_related('proveedor').filter(id=id)
-        dcompra_det = DCompra.objects.select_related('almacen__producto').filter(compra=id)
+        dcompra_det = DCompra.objects.select_related('inventario__producto').filter(compra=id)
 
         return render(
             request, 'compra_detail.html',
@@ -144,6 +147,29 @@ def CompraDetalle(request, id=id):
             request, 'compra_list.html',
             {'form': form, 'page_obj': page_obj}
         )
+
+
+@login_required(login_url='/accounts/login/')
+def CompraNuevo(request):
+    DCompraFormSet = formset_factory(DCompraForm, extra=2, can_delete=True)
+    if request.method == 'POST':
+        form = ECompraForm(request.POST)
+        formset = DCompraFormSet(request.POST)
+        if form.is_valid() and formset.is_valid() :
+            regecompra = ECompra(Proveedor=form['proveedor'].value(), pedido=form['pedido'].value(), factura=form['factura'].value(), fecha=form['fecha'].value(), subtotal=form['subtotal'].value(), iva=form['iva'].value(), total=form['total'].value(),observacion=form['observacion'].value())
+            regecompra.save()
+            
+            
+            mensaje = 'Producto guardado con Exito'
+    else:
+        form = ECompraForm()    
+        formset = DCompraFormSet()
+
+    
+    return render(
+        request, 'compra_nuevo.html',
+        {'form': form,'formset':formset}
+    )
 
 
 '''

@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from datetime import date
-from almacen.models import Producto
+from almacen.models import Producto, Inventario
 
 
 class Proveedor(models.Model):
@@ -65,7 +65,7 @@ class ECompra(models.Model):
 
 class DCompra(models.Model):
     compra=models.ForeignKey('ECompra', on_delete=models.CASCADE, null=True)                          
-    producto=models.ForeignKey('almacen.Producto', on_delete=models.CASCADE, null=True)
+    inventario=models.ForeignKey('almacen.Inventario', on_delete=models.CASCADE, null=True)
     cantidad = models.IntegerField(default=0)
     precio=models.DecimalField(max_digits=10,decimal_places=2)
     importe=models.DecimalField(max_digits=10,decimal_places=2)
@@ -77,10 +77,11 @@ class DCompra(models.Model):
         """
         String que representa al objeto Book
         """
-        return '%s (%s) %s %s' % (self.almacen.producto.nombre, self.cantidad, self.precio, self.importe)
+        return '%s (%s) %s %s' % (self.inventario.producto.nombre, self.cantidad, self.precio, self.importe)
 
     def get_absolute_url(self):
         """
         Devuelve el URL a una instancia particular de Book
         """
         return reverse('compra-detail', args=[str(self.id)])
+

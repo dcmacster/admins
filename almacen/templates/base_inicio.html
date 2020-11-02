@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang='es'>
     <head>
-        {% block title %}<title>Compras</title>{% endblock %}
+        {% block title %}<title>Almacen</title>{% endblock %}
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -12,7 +12,6 @@
         {% load static %}
         <link rel="stylesheet" href="{% static 'css/styles.css' %}">
         <script type="text/javascript" src="{% static 'js/ajax.js' %}"></script>
-    
     </head>
 
         <body>
@@ -27,27 +26,27 @@
                     <div class="col-sm-2">
                         {% block sidebar %}
                         <nav class="navbar navbar-inverse">
-                            <div class="container-fluid">
-                                <div class="navbar-header">
-                                    <a class="navbar-brand" href="#">Menu</a>
-                                </div>
-                                <ul class="nav navbar-nav">
-                                    <li role="presentation"><a href="/compras/">Home</a></li>
-                                    <li role="presentation"><a href="{% url 'proveedor-list' %}">Directorio de Proveedor</a>
-                                    </li>
-                                    
-                                    <li role="presentation"><a href="{% url 'compra-list' %}">Lista de Compras</a></li>
-                                    <li role="presentation"><a href="/../admin/">Alta de Proveedor</a></li>
-                                    <li role="presentation"><a href="/../inicio/">Pagina Principal</a></li>
-                                    {% if user.is_authenticated %}
-                                
-                                        <li role="presentation"><a href="{% url 'logout'%}">Cierre de sesion</a>
-                                        </li>
-                                    {% endif %}
-                                </ul>
+                        <div class="container-fluid">
+                            <div class="navbar-header">
+                                <a class="navbar-brand" href="#">Menu</a>
                             </div>
+                            <ul class="nav navbar-nav">
+                                <li role="presentation"><a href="/inicio/">Home</a></li>
+                                {% if user.is_authenticated %}
+                                
+                                    <li role="presentation"><a href="{% url 'logout'%}?next={{request.path}}">Cierre de sesion</a>
+                                    </li>
+                                
+                               
+                                {% endif %}
+                            </ul>
+                        </div>
                         </nav>
 
+
+                      
+                       
+                   
                         {% endblock %}
                     </div>
                     <div class="col-sm-10 ">

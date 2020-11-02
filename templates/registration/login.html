@@ -1,0 +1,55 @@
+{% extends "base_inicio.html" %}
+
+{% block title %}<title>LOGIN</title>{% endblock %}
+
+{% block content %}
+<div class="jumbotron">
+    <div class="container">
+        <div class="page-header">
+            <h1>Inicio de sesion</h1>
+        </div>
+
+    </div>
+</div>
+
+
+<div class="panel panel-primary">
+    <div class="panel-heading">Ingreso</div>
+        <div class="panel-body">
+            <div class="container-fluid">
+         {%  if form.errors %}
+            <p>Tu nombre de Usuario y contraseña no coinciden. Por favor intentalo de nuevo</p>
+        {% endif %}
+
+
+        {%  if next %}
+            {% if user.is_authenticated %}
+                <p>Tu cuenta no tiene  acceso a esta pagina. Procede a iniciar sesion con una cuenta valida </p>
+            {% else %}
+                <p>Por favor incia sesion para ver esta pagina</p>                
+            {% endif %}
+        {% endif %}
+
+        <form method="POST" id="entrada-form" action="{% url 'login' %}">
+            {% csrf_token %}
+           <div class="row">
+                <div class="form-group col-4">
+                <label class="col-12">{{ form.username.label_tag }}</label>
+                {{form.username}}
+                <label class="col-12">{{ form.password.label_tag }}</label>
+                {{form.password}}
+                </div>
+                <input type="submit" class="btn btn-primary" value="login" />
+                <input type="hidden"  value="{{next}}" />
+            </div>
+
+           </div>
+        </form>
+               
+
+            </div>
+        </div>
+</div>
+
+
+{% endblock %}

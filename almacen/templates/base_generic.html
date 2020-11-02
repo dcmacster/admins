@@ -31,7 +31,7 @@
                                 <a class="navbar-brand" href="#">Menu</a>
                             </div>
                             <ul class="nav navbar-nav">
-                                <li role="presentation"><a href="{% url 'index' %}">Home</a></li>
+                                <li role="presentation"><a href="/almacen/">Home</a></li>
                                 <li role="presentation"><a href="{% url 'lproducto' %}">Inventario de Productos</a>
                                 </li>
                                    <li role="presentation"><a href="{% url 'entrada' %}">Ingreso de Productos</a></li>
@@ -40,6 +40,14 @@
                                 </li>
                                 <li role="presentation"><a href="{% url 'lsalidas' %}">Lista de registro de Salidas</a></li>
                                 <li role="presentation"><a href="/../admin/">Alta de producto</a></li>
+                                <li role="presentation"><a href="/../inicio/">Pagina Principal</a></li>
+                                {% if user.is_authenticated %}
+                                
+                                    <li role="presentation"><a href="{% url 'logout'%}">Cierre de sesion</a>
+                                    </li>
+                                
+                               
+                                {% endif %}
                             </ul>
                         </div>
                         </nav>

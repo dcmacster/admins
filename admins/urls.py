@@ -21,8 +21,9 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    #path('/', RedirectView.as_view(url='/almacen/', permanent=True)),
-    path('', RedirectView.as_view(url='/compras/', permanent=True)),
+    path('/', RedirectView.as_view(url='inicio/', permanent=True)),
+    path('', RedirectView.as_view(url='inicio/', permanent=True)),
+    path('inicio/', include('inicio.urls')),
     path('almacen/', include('almacen.urls')),
     path('compras/', include('compras.urls')),
     path('admin/', admin.site.urls),
@@ -31,3 +32,5 @@ urlpatterns = [
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+urlpatterns +=[path('accounts/',include('django.contrib.auth.urls')),]

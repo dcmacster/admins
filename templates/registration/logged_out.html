@@ -1,0 +1,30 @@
+{% extends "base_inicio.html" %}
+
+{% block title %}<title>LOGOUT</title>{% endblock %}
+
+{% block content %}
+<div class="jumbotron">
+    <div class="container">
+        <div class="page-header">
+            <h1>Cierre de sesion</h1>
+        </div>
+
+    </div>
+</div>
+
+
+<div class="panel panel-primary">
+    <div class="panel-heading">Ingreso</div>
+        <div class="panel-body">
+            <div class="container-fluid">
+         
+               <a href="{% url 'login' %}">Click aqui para Iniciar secion otra vez</a>
+
+            </div>
+        </div>
+</div>
+
+
+
+
+{% endblock %}

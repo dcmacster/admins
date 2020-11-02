@@ -21,6 +21,8 @@ import json
 from .models import Producto,Inventario,Imagen, regEntrada, regSalida
 from .forms import BuscarCodigoForm, EntradaCantidadForm, BuscarProductForm, ProductoForm, ProductoFormE, InventarioForm
 
+
+@login_required(login_url='/accounts/login/')
 def index(request):
     mensage='Bienvenido '
 
@@ -37,6 +39,7 @@ class ProductoListView(generic.ListView):
 '''
 
 
+@login_required(login_url='/accounts/login/')
 def ProductoCrear(request):
     if request.method == 'POST':
         form = ProductoForm(request.POST)
@@ -54,6 +57,7 @@ def ProductoCrear(request):
     )
 
 
+@login_required(login_url='/accounts/login/')
 def ProductoDetalle(request,id=id):
     if request.method == 'GET':
         busproducto = request.GET.get('id')
@@ -77,7 +81,7 @@ def ProductoDetalle(request,id=id):
             )
 
 
-
+@login_required(login_url='/accounts/login/')
 def ProductoListView(request):
     if request.method == 'POST':
         form = BuscarProductForm(request.POST)
@@ -97,6 +101,8 @@ def ProductoListView(request):
         {'form':form,'page_obj': page_obj}
     )
 
+
+@login_required(login_url='/accounts/login/')
 def ProductoEliminar(request):
     if request.method == 'POST':
         busproducto = request.POST.get('pk')
@@ -114,6 +120,7 @@ def ProductoEliminar(request):
     )
 
 
+@login_required(login_url='/accounts/login/')
 def ProductoEditar(request):
     if request.method == 'POST':
         accion=request.POST.get('accion')
@@ -170,7 +177,9 @@ def ProductoEditar(request):
             request,'producto_list.html',
             {'form':form,'page_obj': page_obj}
         )
-       
+
+
+@login_required(login_url='/accounts/login/')
 def InventarioCrear(request):
     if request.method == 'POST':
         form = InventarioForm(request.POST)
@@ -188,14 +197,14 @@ def InventarioCrear(request):
     )
         
 
-
+@login_required(login_url='/accounts/login/')
 def EntradaView(request):
     form = BuscarCodigoForm()
     inventarios=Inventario.objects.select_related('producto')
     return render(request,"entrada.html",{"form":form,"inventarios":inventarios})
 
 
-
+@login_required(login_url='/accounts/login/')
 def postBuscar(request):
     if request.method == 'POST':
         form = BuscarCodigoForm(request.POST)
@@ -210,6 +219,7 @@ def postBuscar(request):
         return render(request,"entrada.html",{"form":form,"inventarios":inventarios})
 
 
+@login_required(login_url='/accounts/login/')
 def postIngresar(request):
     if request.method == 'POST':
         form = EntradaCantidadForm(request.POST)
@@ -233,12 +243,14 @@ def postIngresar(request):
         inventarios = Inventario.objects.select_related('producto')
         return render(request, "entrada.html", {"form": form, "inventarios": inventarios})
 
+@login_required(login_url='/accounts/login/')
 def SalidaView(request):
     form = BuscarCodigoForm()
     inventarios=Inventario.objects.select_related('producto')
     return render(request,"salida.html",{"form":form,"inventarios":inventarios})
 
 
+@login_required(login_url='/accounts/login/')
 def postSbuscar(request):
     if request.method == 'POST':
         form = BuscarCodigoForm(request.POST)
@@ -254,6 +266,7 @@ def postSbuscar(request):
         return render(request, "salida.html", {"form": form, "inventarios": inventarios})
 
 
+@login_required(login_url='/accounts/login/')
 def postReducir(request):
     if request.method == 'POST':
         form = EntradaCantidadForm(request.POST)
@@ -278,6 +291,7 @@ def postReducir(request):
         return render(request, "salida.html", {"form": form, "inventarios": inventarios})
 
 
+@login_required(login_url='/accounts/login/')
 def EntradaListView(request):
 
     if request.method == 'POST':
@@ -296,7 +310,9 @@ def EntradaListView(request):
         request, 'entradas_list.html',
         {'form':form, 'page_obj': page_obj}
         )
-   
+
+
+@login_required(login_url='/accounts/login/')
 def SalidaListView(request):
     salida_list = regSalida.objects.select_related('inventario__producto')
     paginator = Paginator(salida_list, 10)

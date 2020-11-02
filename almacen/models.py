@@ -44,7 +44,7 @@ class Inventario(models.Model):
         """
         String para representar el Objeto del Modelo
         """
-        return '%s (%s) %s' % (self.id, self.producto.nombre,self.cantidad)
+        return '%s (%s) %s' % (self.codigob, self.producto.nombre, self.cantidad)
 
 class Imagen(models.Model):
     producto = models.ForeignKey('Producto', on_delete=models.CASCADE, null=True)
