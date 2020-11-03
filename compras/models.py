@@ -4,7 +4,7 @@ from django.db import models
 from django.urls import reverse
 import uuid  # Requerida para las instancias de libros únicos
 from django.contrib.auth.models import User
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
 from datetime import date
 from almacen.models import Producto, Inventario
@@ -85,3 +85,22 @@ class DCompra(models.Model):
         """
         return reverse('compra-detail', args=[str(self.id)])
 
+
+@receiver(post_save, sender=DCompra)
+def agregar_inventario(sender,instance,**kwargs):
+    reginventario=Inventario.objects.get(pk=instance.inventario.id)
+    cantnuevo=int(instance.cantidad)
+    cantactual=int(reginventario.cantidad)
+    canttotal=cantactual+cantnuevo
+    reginventario.cantidad=canttotal
+    reginventario.save()
+
+
+@receiver(pre_delete, sender=DCompra)
+def  desagregar_inventario(sender,instance,**kwargs):
+    reginventario=Inventario.objects.get(pk=instance.inventario.id)
+    cantnuevo=int(instance.cantidad)
+    cantactual=int(reginventario.cantidad)
+    canttotal=cantactual-cantnuevo
+    reginventario.cantidad=canttotal
+    reginventario.save()
