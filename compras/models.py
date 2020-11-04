@@ -4,7 +4,7 @@ from django.db import models
 from django.urls import reverse
 import uuid  # Requerida para las instancias de libros únicos
 from django.contrib.auth.models import User
-from django.db.models.signals import post_save, pre_delete
+from django.db.models.signals import post_save, pre_delete, pre_save
 from django.dispatch import receiver
 from datetime import date
 from almacen.models import Producto, Inventario
@@ -84,6 +84,17 @@ class DCompra(models.Model):
         Devuelve el URL a una instancia particular de Book
         """
         return reverse('compra-detail', args=[str(self.id)])
+
+@receiver(pre_save, sender=DCompra)
+def modificar_inventario(sender,instance,**kwargs):
+    if not instance._state.adding:
+        regdcompra=DCompra.objects.get(pk=instance.id)
+        reginventario=Inventario.objects.get(pk=regdcompra.inventario.id)
+        cantmod=int(regdcompra.cantidad)
+        cantactual=int(reginventario.cantidad)
+        canttotal=cantactual-cantmod
+        reginventario.cantidad=canttotal
+        reginventario.save()
 
 
 @receiver(post_save, sender=DCompra)

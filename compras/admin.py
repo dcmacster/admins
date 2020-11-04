@@ -6,7 +6,7 @@ from .models import Proveedor, DCompra, ECompra
 
 class DCompraInline(admin.TabularInline):
     model = DCompra
-
+    fields = ['inventario', 'cantidad','precio','importe']
 @admin.register(Proveedor)
 class ProveedorAdmin(admin.ModelAdmin):
     list_display = ('nombre', 'telefono', 'direccion', 'email')
@@ -17,7 +17,7 @@ class ProveedorAdmin(admin.ModelAdmin):
 @admin.register(ECompra)
 class ECompraAdmin(admin.ModelAdmin):
     list_display = ('fecha', 'proveedor', 'factura', 'total')
-    fields = ['proveedor', ('factura','pedido','fecha'), ('subtotal', 'iva','total')]
+    fields = ['proveedor', ('factura','pedido'),'fecha', ('subtotal', 'iva'),'total','observacion']
     inlines = [DCompraInline]
-    search_fields = ['proveedor', 'fecha','factura']
-    list_filter = ['total']
+    search_fields = ['proveedor','factura']
+    list_filter = ['total','fecha']
